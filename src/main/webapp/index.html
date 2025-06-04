@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Chat WebSocket</title>
+    </head>
+    <body>
+        <h2>WebSocket Chat</h2>
+        <div id="chat-box" style="border:1px solid #ccc; height:200px; overflow-y:auto;"></div>
+        <input type="text" id="message" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+
+        <script>
+            const chatBox = document.getElementById("chat-box");
+            const socket = new WebSocket("ws://" + location.host + "/chatwsDemo/chat");
+
+            // Sau khi socket mở, gửi login tên user
+            socket.onopen = function () {
+                const username = prompt("Enter your username");
+                socket.send("LOGIN:" + username);
+            };
+
+
+            socket.onmessage = function (event) {
+                const p = document.createElement("p");
+                p.textContent = event.data;
+                chatBox.appendChild(p);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+
+            socket.onerror = function (error) {
+                console.error("WebSocket error:", error);
+            };
+
+            socket.onclose = function (event) {
+                console.log("WebSocket connection closed:", event);
+            };
+
+            function sendMessage() {
+                const input = document.getElementById("message");
+                const message = input.value.trim();
+                if (message === "") {
+                    return; // không gửi tin nhắn rỗng
+                }
+
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(message);
+                    input.value = "";
+                } else {
+                    alert("WebSocket is not connected.");
+                }
+            }
+        </script>
+    </body>
+</html>
