@@ -12,7 +12,7 @@
 
         <script>
             const chatBox = document.getElementById("chat-box");
-            const socket = new WebSocket("ws://" + location.host + "/chatwsDemo/chat");
+            const socket = new WebSocket("ws://" + location.host + "/chat");
 
             // Sau khi socket mở, gửi login tên user
             socket.onopen = function () {
